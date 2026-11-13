@@ -7,7 +7,14 @@
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
     <meta name="theme-color" content="#ffffff" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="校园卡" />
     <title>天大校园卡服务</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icons/icon-180.png" />
+    <link rel="icon" type="image/png" href="icons/icon-192.png" />
     <style>
 :root {
   --blue: #2f8cff;
@@ -87,6 +94,12 @@ img {
   overflow: hidden;
   background: var(--bg);
   box-shadow: 0 24px 72px rgba(30, 50, 80, 0.18);
+}
+
+@supports (height: 100dvh) {
+  .phone-frame {
+    height: min(100dvh, 900px);
+  }
 }
 
 .app-root {
@@ -1228,6 +1241,25 @@ img {
   }
 }
 
+@media (display-mode: standalone) {
+  body {
+    background: #fff;
+  }
+
+  .phone-frame {
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .app-root {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
 @media (max-width: 360px) {
   .header-title {
     font-size: 17px;
@@ -2279,6 +2311,12 @@ document.addEventListener("click", (event) => {
 });
 
 render();
+
+if ("serviceWorker" in navigator && /^https?:$/.test(window.location.protocol)) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
 
 </script>
   </body>
